@@ -48,7 +48,8 @@ public class Sensorservice extends BaseService {
         @Override
         public void sendMsg(SensorMsg sensorMsg) throws RemoteException {
             LG.i(tag,"sendMsg:"+sensorMsg);
-            mReceiveListener.getBroadcastItem(0).getMsg(new SensorMsg(1,"5555666"));
+            receiveMsg(sensorMsg);
+
         }
 
         @Override
@@ -65,5 +66,28 @@ public class Sensorservice extends BaseService {
                 Log.d("tag","===  解除注册失败 ");
             }
         }
+
+        //收到消息处理
+        public void receiveMsg(SensorMsg sensorMsg) {
+            //通知Callback循环开始,返回N为实现mReceiveListener回调的个数
+            final int N = mReceiveListener.beginBroadcast();
+
+            sensorMsg.setCode(555);
+            sensorMsg.setGs("woshishui,weileshui,wodezhanyoubuhuilai");
+            for (int i = 0; i < N; i++){
+                SensorMsgListen listener = mReceiveListener.getBroadcastItem(i);
+                if (listener != null){
+                    try {
+                        listener.getMsg(sensorMsg);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            //通知通知Callback循环结束
+            mReceiveListener.finishBroadcast();
+        }
+
     }
 }

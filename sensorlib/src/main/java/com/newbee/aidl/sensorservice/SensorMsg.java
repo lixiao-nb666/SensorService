@@ -14,9 +14,11 @@ public class SensorMsg implements Parcelable {
     private long time;
 
 
+
     public SensorMsg(int code, String gs){
         this.code=code;
         this.gs=gs;
+        this.time=System.currentTimeMillis();
     }
 
 
